@@ -15,7 +15,7 @@ Respond with Yes and No.
 Check if the given function/functions can be fuzz tested using go test fuzz.
 When evaluating functions, check if they implement parsing, decoding, 
 decrypting, unmarshaling, etc. because they are good targets for fuzz testing.
-Usually, internal APIs are a waste of time, so keep that in mind.
+Usually internal APIs are a waste of time, so keep that in mind.
 `
 
 func run_gpt(func_name string, functions string) {
@@ -38,7 +38,8 @@ func run_gpt(func_name string, functions string) {
 					Content: gptinput,
 				},
 			},
-			Temperature: 0.5,
+			Temperature: 0,
+			TopP:        0,
 		},
 	)
 
