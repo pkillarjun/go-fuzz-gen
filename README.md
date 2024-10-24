@@ -1,10 +1,9 @@
-# go-fuzz-gen
-LLM powered fuzz-test generator
+# Go-fuzz-gen
+GPT-powered GoLang fuzzing test generator
 
-### Usage
-
+## Setup and usage
 ```bash
-export OPENAI_API_KEY="sk-?"
-git clone github.com/user/project
+export OPENAI_API_KEY='sk-proj-'
+go mod init main
 go run . ../project/
 ```

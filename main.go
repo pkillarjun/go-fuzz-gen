@@ -11,70 +11,62 @@ import (
 )
 
 const (
-	red_color     = "\033[31m"
-	blue_color    = "\033[34m"
-	cyan_color    = "\033[36m"
-	green_color   = "\033[32m"
-	reset_color   = "\033[0m"
-	yellow_color  = "\033[33m"
-	magenta_color = "\033[35m"
+	colorReset   = "\033[0m"
+	colorRed     = "\033[31m"
+	colorBlue    = "\033[34m"
+	colorCyan    = "\033[36m"
+	colorGreen   = "\033[32m"
+	colorYellow  = "\033[33m"
+	colorMagenta = "\033[35m"
 )
 
-/*
- * Check all source files and *_test.go files for fuzz tests.
- * Get AST of files.
- */
-func process_files(files []string) {
+func processDirectory(directory string) {
+	var goFiles []string
+	var filesAST []*ast.File
 
-	var files_ast []*ast.File
-	fset := token.NewFileSet()
-
-	for _, file := range files {
-		file_ast, err := parser.ParseFile(fset, file, nil, 0)
-		if err != nil {
-			fmt.Printf(red_color+"error: %s: %v"+reset_color, file, err)
-			continue
-		}
-
-		files_ast = append(files_ast, file_ast)
-	}
-
-	ast_analysis(files_ast)
-}
-
-func process_dir(path string) {
-	var files []string
-
-	dir_entry, err := os.ReadDir(path)
+	entries, err := os.ReadDir(directory)
 	if err != nil {
-		fmt.Printf(red_color+"Error reading directory: %v\n"+reset_color, err)
+		fmt.Printf("%sError reading directory '%s': %v%s\n", colorRed, directory, err, colorReset)
 		return
 	}
 
-	for _, entry := range dir_entry {
-		entry_path := filepath.Join(path, entry.Name())
+	for _, entry := range entries {
+		entryPath := filepath.Join(directory, entry.Name())
 
 		if entry.IsDir() {
-			process_dir(entry_path)
+			processDirectory(entryPath)
 			continue
 		}
 
 		if strings.HasSuffix(entry.Name(), ".go") {
-			files = append(files, entry_path)
+			goFiles = append(goFiles, entryPath)
 		}
 	}
 
-	if len(files) > 0 {
-		fmt.Printf(blue_color+"\nProcessing directory: %s\n"+reset_color, path)
-		process_files(files)
+	if len(goFiles) == 0 {
+		return
 	}
+
+	fmt.Printf("%sProcessing directory: %s%s\n", colorBlue, directory, colorReset)
+
+	fset := token.NewFileSet()
+	for _, filePath := range goFiles {
+		fileAST, err := parser.ParseFile(fset, filePath, nil, 0)
+		if err != nil {
+			fmt.Printf("%sError parsing file '%s': %v%s\n", colorRed, filePath, err, colorReset)
+			continue
+		}
+		filesAST = append(filesAST, fileAST)
+	}
+
+	processAST(filesAST)
 }
 
 func main() {
 	if len(os.Args) != 2 {
-		fmt.Printf(red_color + "Provide input as <dir> \n" + reset_color)
+		fmt.Printf("%sUsage: %s <directory>%s\n", colorRed, os.Args[0], colorReset)
 		return
 	}
 
-	process_dir(os.Args[1])
+	processDirectory(os.Args[1])
 }
