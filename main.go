@@ -38,7 +38,7 @@ func processDirectory(directory string) {
 			continue
 		}
 
-		if strings.HasSuffix(entry.Name(), ".go") {
+		if strings.HasSuffix(entry.Name(), ".go") && !strings.HasSuffix(entry.Name(), "_test.go") {
 			goFiles = append(goFiles, entryPath)
 		}
 	}

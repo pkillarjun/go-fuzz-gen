@@ -13,7 +13,7 @@ import (
 var (
 	apiKey   = os.Getenv("OPENAI_API_KEY")
 	systemAI = `
-Respond with "No (pass condition in my script)" or the go-fuzz test function (I need only the function).
+Respond with No('No' is pass condition in my script) or the go-fuzz test function (I need only the function).
 You have to write a go-fuzz test for the given function.
 Make sure to evaluate the function, to check even if it's worth fuzzing.
 Usually, I find internal APIs of a program (target under test) are sometimes good and sometimes useless.
