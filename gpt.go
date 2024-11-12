@@ -13,12 +13,10 @@ import (
 var (
 	apiKey   = os.Getenv("OPENAI_API_KEY")
 	systemAI = `
-Respond with No('No' is pass condition in my script) or the go-fuzz test function (I need only the function).
-You have to write a go-fuzz test for the given function.
-Make sure to evaluate the function, to check even if it's worth fuzzing.
-Usually, I find internal APIs of a program (target under test) are sometimes good and sometimes useless.
-Note: I think the good functions are when they do some kind of parsing, decoding, unmarshaling.
-Request: For now, you can ignore the functions that heavily rely on Go-lang official libraries (for example, JSON, HTTP, and others).
+Respond with "No" (No is a pass condition in my script) or the go-fuzz test function. Source: https://go.dev/doc/security/fuzz/.
+Evaluate the function to check if it's even worth fuzzing.
+Note: Good functions are those that perform some kind of parsing, decoding, or unmarshaling (this is not always true).
+Don't create fuzz tests for functions (from the project I gave you) that rely on official Golang libraries (e.g., JSON, HTTP, net, etc.).
 `
 )
 
@@ -55,8 +53,8 @@ func processGPT(funcName string, functionCode string) {
 		return
 	}
 
-	fmt.Println(colorYellow + strings.Repeat("+", 79) + colorReset)
-	fmt.Println(colorGreen + "Function Name: " + funcName + colorReset)
-	fmt.Println(colorCyan + completion.Choices[0].Message.Content + colorReset)
+	if completion.Choices[0].Message.Content != "No" {
+		fmt.Println(colorCyan + completion.Choices[0].Message.Content + colorReset)
+	}
 	fmt.Println(colorMagenta + strings.Repeat("-", 79) + "\n" + colorReset)
 }

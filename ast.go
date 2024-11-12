@@ -19,8 +19,13 @@ func hasTargetParam(params []*ast.Field) bool {
 				return true
 			}
 		case *ast.SelectorExpr:
-			if xIdent, ok := fieldType.X.(*ast.Ident); ok && xIdent.Name == "io" && fieldType.Sel.Name == "Reader" {
-				return true
+			if xIdent, ok := fieldType.X.(*ast.Ident); ok {
+				if xIdent.Name == "io" && fieldType.Sel.Name == "Reader" {
+					return true
+				}
+				if xIdent.Name == "bytes" && fieldType.Sel.Name == "Buffer" {
+					return true
+				}
 			}
 		}
 	}
