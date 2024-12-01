@@ -35,14 +35,12 @@ func processGPT(funcName string, functionCode string) {
 	ctx := context.Background()
 
 	messages := openai.F([]openai.ChatCompletionMessageParamUnion{
-		// openai.SystemMessage(systemAI),
-		// openai.UserMessage(prompt),
 		openai.UserMessage(systemAI + "\n\n" + prompt),
 	})
 
 	completion, err := client.Chat.Completions.New(ctx, openai.ChatCompletionNewParams{
 		Messages:    messages,
-		Model:       openai.F(openai.ChatModelO1Preview),
+		Model:       openai.F(openai.ChatModelO1Mini),
 		Temperature: openai.F(1.000000),
 		TopP:        openai.F(1.000000),
 	})
@@ -57,6 +55,7 @@ func processGPT(funcName string, functionCode string) {
 
 	if completion.Choices[0].Message.Content != "No" {
 		fmt.Println(colorMagenta + strings.Repeat("-", 79) + "\n" + colorReset)
+		fmt.Println(colorRed + "Function Name: " + funcName + colorReset)
 		fmt.Println(colorCyan + completion.Choices[0].Message.Content + colorReset)
 		fmt.Println(colorMagenta + strings.Repeat("-", 79) + "\n" + colorReset)
 	}
