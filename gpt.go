@@ -13,10 +13,9 @@ import (
 var (
 	apiKey   = os.Getenv("OPENAI_API_KEY")
 	systemAI = `
-Respond with "No" (No is a pass condition in my script) or the go-fuzz test function only(Don't add explanation and how-to guide). Source: https://go.dev/doc/security/fuzz/.
-Evaluate the function to check if it's even worth fuzzing.
-Note: Good functions are those that perform some kind of parsing, decoding, or unmarshaling (this is not always true).
-Don't create fuzz tests for functions (from the project I gave you) that rely on official Golang libraries (e.g., JSON, HTTP, net, etc.).
+Respond with "No" or a go-fuzz(https://go.dev/doc/security/fuzz/) test function without any explanation or how-to guide.
+Evaluate the given function to check "Is it even worth fuzzing?"
+Note: Usually, a good target function does parsing, decoding, deserialization, unmarshaling, etc. of a given input/inputs.
 `
 )
 
